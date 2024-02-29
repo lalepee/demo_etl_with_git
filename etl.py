@@ -161,8 +161,8 @@ def main():
             }
             links.append(link)
 
-    not_pending_dataset = Dataset(ingestion_status="NONE")
-    dataset_api_instance.update_dataset(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0], not_pending_dataset)
+    dataset = Dataset(ingestion_status="SUCCESS")
+    dataset_api_instance.update_dataset(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0], dataset)
 
     try:
         LOGGER.info("Erasing data from target Dataset")
@@ -172,6 +172,9 @@ def main():
             dataset_twin_graph_query={"query": "MATCH (n) DETACH DELETE n"})
     except e:
         pass
+
+    not_pending_dataset = Dataset(ingestion_status="NONE")
+    dataset_api_instance.update_dataset(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0], not_pending_dataset)
 
     LOGGER.info("Writing entities into target Dataset")
     dataset_api_instance.create_twingraph_entities(
