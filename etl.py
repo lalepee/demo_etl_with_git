@@ -41,10 +41,9 @@ def main():
         runner_api_instance = RunnerApi(api_client)
         dataset_api_instance = DatasetApi(api_client)
         workspace_api_instance = WorkspaceApi(api_client)
-        # TODO : need to replace use of scenario_api to runner api when available
         runner_data = runner_api_instance.get_runner(organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
                                                      workspace_id=os.environ.get("CSM_WORKSPACE_ID"),
-                                                     runner_id=os.environ.get("CSM_SCENARIO_ID"))
+                                                     runner_id=os.environ.get("CSM_RUNNER_ID"))
         LOGGER.info("Loaded run data")
         target_dataset = dataset_api_instance.find_dataset_by_id(
             organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
