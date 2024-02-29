@@ -161,10 +161,9 @@ def main():
             }
             links.append(link)
 
-    LOGGER.info("Writing data into target Dataset")
-
     dataset = dataset_api_instance.find_dataset_by_id(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0])
     if dataset.status:
+        LOGGER.info("Erasing data from target Dataset")
         dataset_api_instance.twingraph_query(
             organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
             dataset_id=runner_data['dataset_list'][0],
@@ -173,12 +172,14 @@ def main():
     not_pending_dataset = Dataset(ingestion_status="NONE")
     dataset_api_instance.update_dataset(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0], not_pending_dataset)
 
-    create = dataset_api_instance.create_twingraph_entities(
+    LOGGER.info("Writing entities into target Dataset")
+    dataset_api_instance.create_twingraph_entities(
         organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
         dataset_id=runner_data['dataset_list'][0],
         type="node",
         graph_properties=bars + customers)
 
+    LOGGER.info("Writing relationshipss into target Dataset")
     dataset_api_instance.create_twingraph_entities(
         organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
         dataset_id=runner_data['dataset_list'][0],
