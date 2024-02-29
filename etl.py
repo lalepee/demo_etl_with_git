@@ -161,16 +161,17 @@ def main():
             }
             links.append(link)
 
-    dataset = dataset_api_instance.find_dataset_by_id(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0])
-    if dataset.status:
+    not_pending_dataset = Dataset(ingestion_status="NONE")
+    dataset_api_instance.update_dataset(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0], not_pending_dataset)
+
+    try:
         LOGGER.info("Erasing data from target Dataset")
         dataset_api_instance.twingraph_query(
             organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
             dataset_id=runner_data['dataset_list'][0],
             dataset_twin_graph_query={"query": "MATCH (n) DETACH DELETE n"})
-
-    not_pending_dataset = Dataset(ingestion_status="NONE")
-    dataset_api_instance.update_dataset(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0], not_pending_dataset)
+    except e:
+        pass
 
     LOGGER.info("Writing entities into target Dataset")
     dataset_api_instance.create_twingraph_entities(
@@ -186,6 +187,8 @@ def main():
         type="relationship",
         graph_properties=satisfactions + links)
 
+    dataset_full = Dataset(twincache_status="FULL")
+    dataset_api_instance.update_dataset(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0], dataset_full)
     LOGGER.info("ETL Run finished")
 
 
