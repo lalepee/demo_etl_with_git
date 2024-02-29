@@ -116,8 +116,9 @@ def main():
     with ZipFile(base_path + "/brewery_instance.zip") as zip:
         zip.extractall(base_path)
 
+    base_path = base_path + "/reference"
     customers = list()
-    with open(base_path + "/nodes/Customer.csv") as _f:
+    with open(base_path + "/Nodes/Customer.csv") as _f:
         LOGGER.info("Found 'Customer' list")
         csv_r = csv.DictReader(_f)
         for row in csv_r:
@@ -132,7 +133,7 @@ def main():
             customers.append(customer)
 
     satisfactions = list()
-    with open(base_path + "/edges/arc_Satisfaction.csv") as _f:
+    with open(base_path + "/Edges/arc_Satisfaction.csv") as _f:
         LOGGER.info("Found 'Customer satisfaction' relation")
         csv_r = csv.DictReader(_f)
         for row in csv_r:
@@ -146,7 +147,7 @@ def main():
             satisfactions.append(satisfaction)
 
     links = list()
-    with open(base_path + "/edges/Bar_vertex.csv") as _f:
+    with open(base_path + "/Edges/Bar_vertex.csv") as _f:
         LOGGER.info("Found 'Bar vertex' relation")
         csv_r = csv.DictReader(_f)
         for row in csv_r:
