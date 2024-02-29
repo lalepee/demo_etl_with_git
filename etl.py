@@ -169,11 +169,20 @@ def main():
             dataset_id=runner_data['dataset_list'][0],
             dataset_twin_graph_query={"query": "MATCH (n) DETACH DELETE n"})
 
-    create = dataset_api_instance.create_twingraph_entities(
-        organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
-        dataset_id=runner_data['dataset_list'][0],
-        type="node",
-        graph_properties=bars + customers)
+    tries = 5
+    for i in range(tries):
+        try:
+            create = dataset_api_instance.create_twingraph_entities(
+                organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
+                dataset_id=runner_data['dataset_list'][0],
+                type="node",
+                graph_properties=bars + customers)
+        except cosmotech_api.exceptions.ApiException as e:
+            if i < tries - 1:
+                continue
+            else:
+                raise e
+        break
 
 #    create = json.loads(create.replace("][", ","))
 #
@@ -187,11 +196,20 @@ def main():
 #        link["source"] = ids[link["source"]]
 #        link["target"] = ids[link["target"]]
 
-    dataset_api_instance.create_twingraph_entities(
-        organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
-        dataset_id=runner_data['dataset_list'][0],
-        type="relationship",
-        graph_properties=satisfactions + links)
+    tries = 5
+    for i in range(tries):
+        try:
+            dataset_api_instance.create_twingraph_entities(
+                organization_id=os.environ.get("CSM_ORGANIZATION_ID"),
+                dataset_id=runner_data['dataset_list'][0],
+                type="relationship",
+                graph_properties=satisfactions + links)
+        except cosmotech_api.exceptions.ApiException as e:
+            if i < tries - 1:
+                continue
+            else:
+                raise e
+        break
 
     LOGGER.info("ETL Run finished")
 
