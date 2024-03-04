@@ -190,7 +190,7 @@ def main():
         type="relationship",
         graph_properties=satisfactions + links)
 
-    dataset_full = Dataset(twincache_status="FULL")
+    dataset_full = Dataset(twincache_status="FULL", ingestion_status="PENDING")
     dataset_api_instance.update_dataset(os.environ.get("CSM_ORGANIZATION_ID"), runner_data['dataset_list'][0], dataset_full)
     LOGGER.info("ETL Run finished")
 
